@@ -25,6 +25,7 @@ Steps:
 Expected:     Street address the customer chose (or a clear "no address" state)
 Actual:       Address is "Location found" — looks like a geocode fallback string, not a street
 Notes:        Logged by Micheal on live Hosting (deploy 19 Jul). Saturday-visible. Order: Confirmed, 1 item, R20.02, Paid, 28 Jun.
+              Addendum 25 Aug (Eben, customer Chrome run): current Flutter source has no string "Location found". Checkout writes LocationProvider.displayAddress from GeocodingService (Nominatim then BigDataCloud, else lat/long) or a saved address or "Set your address" (lib/screens/cart/checkout_screen.dart:63, lib/providers/location_provider.dart:76-82). Live GPS on this Mac showed "Orania, Jaspisstraat". The 28 Jun order likely stored an older stub/status string as the address.
 
 --------------------------------------------------------------------------------
 Date:         2026-08-25
@@ -49,6 +50,30 @@ Steps:
 Expected:     Timeline includes a Confirmed (or status-updated) event with time
 Actual:       Timeline only shows Created (28 Jun)
 Notes:        Micheal. Did not cancel or advance status.
+
+--------------------------------------------------------------------------------
+Date:         2026-08-25
+App:          flutter
+Severity:     medium
+Summary:      Catalog product photos all show the image-outline placeholder on Chrome
+Steps:
+  1. flutter run -d chrome from knapsak_flutter (Firebase knapsak-app-887fc)
+  2. Open Shop (signed out or signed in)
+Expected:     Product cards show the grocery photo from Firestore imageUrl
+Actual:       Banner + grid cards (Avocado, Albany bread, Beacon chocolate, etc.) all render Icons.image_outlined. 15 live products still listed with names/prices.
+Notes:        Eben, Chrome debug on Mac 25 Aug ~01:15 SAST. ProductImage (lib/widgets/common/product_image.dart) uses CachedNetworkImage and that same outline icon on null URL or load error. Did not distinguish empty imageUrl vs CORS/web load failure. Saturday-visible: shop looks unfinished.
+
+--------------------------------------------------------------------------------
+Date:         2026-08-25
+App:          flutter
+Severity:     low
+Summary:      Specials heading is hardcoded "BEST PRICE ON POOL" while the featured product is chocolate
+Steps:
+  1. flutter run -d chrome
+  2. Open Shop home
+Expected:     Banner heading matches the featured special (or a generic "Specials")
+Actual:       Heading "BEST PRICE ON POOL"; card is Beacon Chocolate Slab 80g at R18.99 (was R24.99, SAVE R6, Wed 9-10 AM)
+Notes:        Eben. lib/screens/shop/home_screen.dart:370 is a const Text leftover from demo_products.dart pool cleaner. Featured item comes from Firestore isSpecial. Saturday-visible copy mismatch.
 
 --------------------------------------------------------------------------------
 ----- EXAMPLE (not a real bug) -----

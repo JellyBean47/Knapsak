@@ -67,6 +67,31 @@ Also flag **questions** about SA VAT, POPIA, and card payments as we notice them
 
 Same cart math on a second order: R19.99 + 8% (R1.60) + R5.99 delivery = R27.58. Not a one-off on the avocado order.
 
+
+### LF-20260825-04 — specials banner heading hardcoded "BEST PRICE ON POOL"
+
+- Date (Africa/Johannesburg): 2026-08-25
+- App: flutter
+- Kind: design
+- Severity: low
+- What we observed: Shop home banner title is "BEST PRICE ON POOL" while the featured card is Beacon Chocolate Slab 80g (R18.99 / was R24.99). Live catalog otherwise loaded (15 results).
+- Why it looks wrong (or why we are unsure): Heading does not come from the product category. It is a leftover const from the demo pool-cleaner special.
+- Expected design (from README / ARCHITECTURE / HANDOVER, if any): Banner should describe the current special, not a previous demo SKU.
+- Suggested check (not a legal opinion): Drive the heading from `catalogSpecialProduct.category` / name, or use a generic "Specials" label. `lib/screens/shop/home_screen.dart:370`.
+- Follow-up owner: Madonna / flutter after Saturday notes
+
+### LF-20260825-02 addendum — Flutter order write has no tax or delivery fields
+
+- Date (Africa/Johannesburg): 2026-08-25
+- App: flutter (feeds supplier pick list)
+- Kind: design
+- Severity: medium
+- What we observed: `FirestoreService.buildOrderData` stores `items[]` (product lines only), `totalAmount` (cart total including 8% tax + R5.99 delivery), and `deliveryAddress` string. No `tax`, `taxRate`, or `deliveryFee` fields. Confirmed in a Chrome cart/checkout walk: Avocado R12.99, Tax (8%) R1.04, Delivery R5.99, Total R20.02 — same math as #G7LKITVG. Did not place the order.
+- Why it looks wrong (or why we are unsure): Supplier cannot itemise what the customer paid because the customer app never writes those lines.
+- Expected design (from README / ARCHITECTURE / HANDOVER, if any): Order document should persist the same breakdown the cart shows (and later the SA VAT model).
+- Suggested check (not a legal opinion): Add tax/delivery (or VAT-inclusive breakdown) on `createOrder` after the VAT model is decided. Do not invent a 15% field until then.
+- Follow-up owner: Madonna / flutter
+
 ## Questions to flag as we find them (not conclusions)
 
 Use a `question-only` entry when testing surfaces any of these. Do not fill them in until we actually hit the case.
