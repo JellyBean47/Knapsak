@@ -1,0 +1,56 @@
+KNAPSAK BUG LOG
+===============
+
+Use one block per bug. Fill in what you saw. Do not invent bugs.
+
+Fields:
+  Date:        YYYY-MM-DD (Africa/Johannesburg)
+  App:         flutter | pos | supplier
+  Severity:    blocker | high | medium | low
+  Summary:     one line
+  Steps:       numbered, starting from a signed-in state if needed
+  Expected:    what should happen
+  Actual:      what happened (include UI text / codes if shown)
+  Notes:       device, browser, build, Firebase project if relevant
+
+--------------------------------------------------------------------------------
+Date:
+App:
+Severity:
+Summary:
+Steps:
+  1.
+  2.
+  3.
+Expected:
+Actual:
+Notes:
+
+--------------------------------------------------------------------------------
+Date:
+App:
+Severity:
+Summary:
+Steps:
+  1.
+  2.
+  3.
+Expected:
+Actual:
+Notes:
+
+--------------------------------------------------------------------------------
+----- EXAMPLE (not a real bug) -----
+Date:         2026-08-25
+App:          pos
+Severity:     medium
+Summary:      EXAMPLE — Z-report cash total does not match the till session
+Steps:
+  1. Sign in with a POS role that can open a till
+  2. Open till with an opening float
+  3. Complete one cash sale
+  4. Close till and read the Z-report
+Expected:     Z-report cash equals opening float plus cash sales (minus cash returns if any)
+Actual:       EXAMPLE placeholder — record the numbers you saw
+Notes:        EXAMPLE only. Delete or ignore this row when logging real bugs.
+----- END EXAMPLE -----
