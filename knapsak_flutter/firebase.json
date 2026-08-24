@@ -1,0 +1,47 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "source": "functions"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "knapsak-app-887fc",
+          "appId": "1:77819801145:android:78213148cf2ea1dae8a7e8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "knapsak-app-887fc",
+          "appId": "1:77819801145:ios:10e37b45ca6df1ffe8a7e8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "knapsak-app-887fc",
+          "configurations": {
+            "android": "1:77819801145:android:78213148cf2ea1dae8a7e8",
+            "ios": "1:77819801145:ios:10e37b45ca6df1ffe8a7e8",
+            "macos": "1:77819801145:ios:10e37b45ca6df1ffe8a7e8",
+            "web": "1:77819801145:web:963773e36c2d7cb8e8a7e8"
+          }
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "knapsak-app-887fc",
+          "appId": "1:77819801145:ios:10e37b45ca6df1ffe8a7e8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  }
+}

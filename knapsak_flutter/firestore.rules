@@ -1,0 +1,320 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isSupplier() {
+      return isSignedIn() && request.auth.token.role == 'supplier';
+    }
+
+    function posRole() {
+      return request.auth.token.posRole;
+    }
+
+    function isPosUser() {
+      return isSignedIn()
+        && posRole() in ['owner', 'manager', 'cashier', 'accountant'];
+    }
+
+    function isPosBooksReader() {
+      return isSignedIn()
+        && posRole() in ['owner', 'manager', 'accountant'];
+    }
+
+    function isPosInventoryReader() {
+      return isPosUser();
+    }
+
+    function optionalPaymentFieldsValid(data) {
+      return (!('paymentIntentId' in data) || data.paymentIntentId is string)
+        && (!('paymentStatus' in data) || data.paymentStatus in ['paid', 'unpaid']);
+    }
+
+    function validSupplierNote(data) {
+      return !('supplierNote' in data)
+        || (data.supplierNote is string && data.supplierNote.size() <= 500);
+    }
+
+    function validOrderCreate() {
+      let data = request.resource.data;
+      return data.keys().hasAll([
+          'userId', 'items', 'totalAmount', 'status',
+          'deliveryAddress', 'createdAt'
+        ])
+        && data.userId is string
+        && data.items is list
+        && data.items.size() > 0
+        && data.totalAmount is number
+        && data.totalAmount > 0
+        && data.status in ['pending', 'confirmed']
+        && data.deliveryAddress is string
+        && data.deliveryAddress.size() > 0
+        && data.createdAt == request.time
+        && optionalPaymentFieldsValid(data);
+    }
+
+    function validOrderCancelUpdate() {
+      let diff = request.resource.data.diff(resource.data);
+      return diff.affectedKeys().hasOnly([
+          'status', 'cancelledAt', 'cancelledFromStatus'
+        ])
+        && request.resource.data.status == 'cancelled'
+        && resource.data.status in ['pending', 'confirmed']
+        && request.resource.data.cancelledFromStatus is string
+        && request.resource.data.cancelledAt == request.time;
+    }
+
+    // Supplier may advance status along the fulfillment chain only.
+    function validSupplierStatusUpdate() {
+      let diff = request.resource.data.diff(resource.data);
+      let from = resource.data.status;
+      let to = request.resource.data.status;
+      let allowed =
+        (from == 'pending' && to == 'confirmed')
+        || (from == 'confirmed' && to == 'preparing')
+        || (from == 'preparing' && to == 'delivering')
+        || (from == 'delivering' && to == 'delivered');
+
+      return diff.affectedKeys().hasOnly(['status', 'statusUpdatedAt', 'updatedAt'])
+        && allowed
+        && (!('statusUpdatedAt' in request.resource.data)
+            || request.resource.data.statusUpdatedAt == request.time)
+        && (!('updatedAt' in request.resource.data)
+            || request.resource.data.updatedAt == request.time);
+    }
+
+    // Supplier cancel before delivered (stock-out / cannot fulfill).
+    function validSupplierCancelUpdate() {
+      let diff = request.resource.data.diff(resource.data);
+      return resource.data.status in ['pending', 'confirmed', 'preparing', 'delivering']
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.cancelledFromStatus == resource.data.status
+        && request.resource.data.cancelledAt == request.time
+        && request.resource.data.cancelledBy == 'supplier'
+        && validSupplierNote(request.resource.data)
+        && diff.affectedKeys().hasOnly([
+          'status', 'cancelledAt', 'cancelledFromStatus', 'cancelledBy',
+          'supplierNote', 'statusUpdatedAt'
+        ])
+        && (!('statusUpdatedAt' in request.resource.data)
+            || request.resource.data.statusUpdatedAt == request.time);
+    }
+
+    // Supplier issue / packing note (does not change status).
+    function validSupplierNoteUpdate() {
+      let diff = request.resource.data.diff(resource.data);
+      return resource.data.status != 'cancelled'
+        && request.resource.data.supplierNote is string
+        && request.resource.data.supplierNote.size() <= 500
+        && diff.affectedKeys().hasOnly(['supplierNote', 'statusUpdatedAt'])
+        && (!('statusUpdatedAt' in request.resource.data)
+            || request.resource.data.statusUpdatedAt == request.time);
+    }
+
+    function validAddress() {
+      let data = request.resource.data;
+      return data.keys().hasAll([
+          'id', 'name', 'address', 'latitude', 'longitude', 'createdAt'
+        ])
+        && data.id is string
+        && data.name is string
+        && data.name.size() > 0
+        && data.address is string
+        && data.address.size() > 0
+        && data.latitude is number
+        && data.longitude is number
+        && data.createdAt is int
+        && (!('icon' in data) || data.icon is string);
+    }
+
+    // Catalog — public read; writes via Admin SDK (seed script) only
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Orders — owner read/cancel; suppliers read all + status / cancel / notes
+    match /orders/{orderId} {
+      allow read: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isSupplier());
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && validOrderCreate();
+
+      allow update: if isSignedIn()
+        && (
+          (resource.data.userId == request.auth.uid && validOrderCancelUpdate())
+          || (isSupplier() && (
+            validSupplierStatusUpdate()
+            || validSupplierCancelUpdate()
+            || validSupplierNoteUpdate()
+          ))
+        );
+
+      allow delete: if false;
+    }
+
+    // User profiles and saved addresses — owner only
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false;
+
+      match /addresses/{addressId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && validAddress()
+          && request.resource.data.id == addressId;
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // ── Finance / POS (client read; all writes via Admin SDK / Functions) ──
+
+    match /financeSettings/{docId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /accounts/{accountId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /periods/{periodId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /journals/{journalId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /documentSequences/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    match /financeAudit/{eventId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /inventoryItems/{itemId} {
+      allow read: if isPosInventoryReader();
+      allow write: if false;
+    }
+
+    match /stockMovements/{movementId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() == 'cashier');
+      allow write: if false;
+    }
+
+    match /tillSessions/{sessionId} {
+      allow read: if isPosUser();
+      allow write: if false;
+    }
+
+    match /posSales/{saleId} {
+      allow read: if isPosUser();
+      allow write: if false;
+    }
+
+    match /posReturns/{returnId} {
+      allow read: if isPosUser();
+      allow write: if false;
+    }
+
+    match /customers/{customerId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() == 'manager');
+      allow write: if false;
+    }
+
+    match /customerInvoices/{invoiceId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /customerPayments/{paymentId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /financeTimeline/{eventId} {
+      allow read: if isPosUser();
+      allow write: if false;
+    }
+
+    match /purchaseReturns/{returnId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() in ['owner', 'manager']);
+      allow write: if false;
+    }
+
+    match /supplierCreditNotes/{creditId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /suppliers/{supplierId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() == 'manager');
+      allow write: if false;
+    }
+
+    match /purchaseOrders/{poId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() in ['owner', 'manager']);
+      allow write: if false;
+    }
+
+    match /goodsReceipts/{grnId} {
+      allow read: if isPosBooksReader()
+        || (isSignedIn() && posRole() in ['owner', 'manager']);
+      allow write: if false;
+    }
+
+    match /supplierBills/{billId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /supplierPayments/{paymentId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+
+    match /bankStatements/{stmtId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+
+      match /lines/{lineId} {
+        allow read: if isPosBooksReader();
+        allow write: if false;
+      }
+    }
+
+    match /bankLines/{lineId} {
+      allow read: if isPosBooksReader();
+      allow write: if false;
+    }
+  }
+}
