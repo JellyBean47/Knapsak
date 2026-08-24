@@ -50,6 +50,23 @@ Also flag **questions** about SA VAT, POPIA, and card payments as we notice them
 
 ---
 
+
+### LF-20260825-03 — cancelled order still shows Paid, no refund on supplier console
+
+- Date (Africa/Johannesburg): 2026-08-25
+- App: supplier (payment state from Flutter/Stripe)
+- Kind: payments
+- Severity: high
+- What we observed: Cancelled `#1W7M7PP2` (Albany brown bread R19.99, total R27.58). Address Orania / Jaspisstraat (real street). Cancelled the same minute it was created, from Confirmed. Console still shows Paid. Note/Save disabled, no Start preparing / Cancel (correct). Print pick list still offered. Micheal did not refund or advance `#G7LKITVG`.
+- Why it looks wrong (or why we are unsure): Customer was charged (Paid) then the order was cancelled; supplier UI has no refund action or “refunded” payment state. Unclear if Stripe was refunded in the background.
+- Expected design (from README / ARCHITECTURE / HANDOVER, if any): Handover mentions supplier cancel with `cancelledBy: 'supplier'` and notes. Stripe refunds vs POS returns are listed as a payments question to flag. Paid + cancelled with no refund trail is a mismatch.
+- Suggested check (not a legal opinion): Check Stripe Dashboard for `#1W7M7PP2` / its PaymentIntent. If still captured, supplier cancel should trigger or at least display a refund. Do not assume PCI/Stripe policy from the UI alone.
+- Follow-up owner: Micheal (supplier) / Madonna (Stripe check)
+
+### LF-20260825-01 addendum — 8% + R5.99 also on cancelled `#1W7M7PP2`
+
+Same cart math on a second order: R19.99 + 8% (R1.60) + R5.99 delivery = R27.58. Not a one-off on the avocado order.
+
 ## Questions to flag as we find them (not conclusions)
 
 Use a `question-only` entry when testing surfaces any of these. Do not fill them in until we actually hit the case.
