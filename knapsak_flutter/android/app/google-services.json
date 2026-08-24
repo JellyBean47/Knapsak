@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "77819801145",
+    "project_id": "knapsak-app-887fc",
+    "storage_bucket": "knapsak-app-887fc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77819801145:android:78213148cf2ea1dae8a7e8",
+        "android_client_info": {
+          "package_name": "com.knapsak.knapsak_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9QXzIrXC3akAlK9pnhDsZ9T6UHOHbGqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
