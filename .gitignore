@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+build/
+dist/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.apk
+*.aab
+*.ipa
+*.app
+
+# iOS / macOS
+Pods/
+**/ios/Pods/
+**/macos/Pods/
+**/Flutter/ephemeral/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Android
+android/.gradle/
+**/.gradle/
+local.properties
+*.jks
+*.keystore
+*.iml
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Secrets and env
+.env
+.env.*
+!.env.example
+*.pem
+*.p8
+*.p12
+*secret*
+service-account.json
+**/service-account.json
+Keys for stripe/
+**/Keys for stripe/
+
+# Firebase local cache
+.firebase/
+
+# Coverage / misc
+coverage/
+*.log
