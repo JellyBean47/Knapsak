@@ -36,7 +36,7 @@ Steps:
   2. Open order #G7LKITVG
 Expected:     Item lines plus any delivery/fee/VAT lines sum to the order total
 Actual:       Avocado each ×1 at R12.99; total R20.02; no fee or delivery line shown
-Notes:        Micheal, live console. Difference R7.03 unexplained on the packing/detail view.
+Notes:        Micheal, live console. Extra R7.03 is Flutter cart 8% tax (R1.04) + deliveryFee R5.99, not shown on the pick list. See LF-20260825-01 and LF-20260825-02.
 
 --------------------------------------------------------------------------------
 Date:         2026-08-25

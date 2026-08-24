@@ -24,17 +24,29 @@ Also flag **questions** about SA VAT, POPIA, and card payments as we notice them
 
 ---
 
-### LF-YYYYMMDD-NN —
+### LF-20260825-01 — customer cart uses 8% US-style sales tax, not 15% SA VAT
 
-- Date (Africa/Johannesburg):
-- App:
-- Kind:
-- Severity:
-- What we observed:
-- Why it looks wrong (or why we are unsure):
-- Expected design (from README / ARCHITECTURE / HANDOVER, if any):
-- Suggested check (not a legal opinion):
-- Follow-up owner:
+- Date (Africa/Johannesburg): 2026-08-25
+- App: flutter (shows up on supplier pick list / order total)
+- Kind: money / VAT
+- Severity: high
+- What we observed: Order #G7LKITVG line is Avocado ×1 at R12.99; order total R20.02. Micheal traced the extra R7.03 to the Flutter cart: `taxRate = 0.08` plus `deliveryFee = 5.99` (8% of 12.99 = R1.04; 12.99 + 1.04 + 5.99 = 20.02).
+- Why it looks wrong (or why we are unsure): 8% is US-style sales tax. POS/handover target is South Africa with default 15% VAT (retail prices VAT-inclusive). These two money models do not match.
+- Expected design (from README / ARCHITECTURE / HANDOVER, if any): POS architecture: ZAR, SA VAT, default 15%, VAT-inclusive shelf prices; confirm categories/zero-rating with a SA accountant. Customer app should not be charging a separate 8% sales tax on top.
+- Suggested check (not a legal opinion): Confirm with a SA accountant whether grocery delivery should be VAT-inclusive at 15%, zero-rated, or mixed — and change the Flutter cart to that model. Do not market “VAT compliant” off the current 8% rate.
+- Follow-up owner: Madonna / flutter after Saturday notes; accountant sign-off before client claims.
+
+### LF-20260825-02 — supplier pick list does not itemise tax or delivery
+
+- Date (Africa/Johannesburg): 2026-08-25
+- App: supplier
+- Kind: design
+- Severity: medium
+- What we observed: Pick list / order detail for #G7LKITVG shows only the avocado line (R12.99) while the total is R20.02. Tax and R5.99 delivery are real in the Flutter cart, just not shown.
+- Why it looks wrong (or why we are unsure): Store operator cannot see why the total is higher than the product line. Easy to treat as a math bug (we did, until Micheal traced it).
+- Expected design (from README / ARCHITECTURE / HANDOVER, if any): Printable pick list / packing slip should list everything the customer paid for (items, delivery, tax/VAT).
+- Suggested check (not a legal opinion): Itemise delivery and tax/VAT on supplier detail + print. After VAT model is fixed, labels must match that model (not “sales tax”).
+- Follow-up owner: Micheal (supplier notes) / patch after testing
 
 ---
 
