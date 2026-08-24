@@ -14,30 +14,41 @@ Fields:
   Notes:       device, browser, build, Firebase project if relevant
 
 --------------------------------------------------------------------------------
-Date:
-App:
-Severity:
-Summary:
+Date:         2026-08-25
+App:          supplier
+Severity:     high
+Summary:      Confirmed order #G7LKITVG shows delivery address "Location found" (geocode stub)
 Steps:
-  1.
-  2.
-  3.
-Expected:
-Actual:
-Notes:
+  1. Sign in to live supplier console (https://knapsak-app-887fc.web.app) as supplier
+  2. Open All (not Today; this is a 28 Jun order)
+  3. Open confirmed order #G7LKITVG
+Expected:     Street address the customer chose (or a clear "no address" state)
+Actual:       Address is "Location found" — looks like a geocode fallback string, not a street
+Notes:        Logged by Micheal on live Hosting (deploy 19 Jul). Saturday-visible. Order: Confirmed, 1 item, R20.02, Paid, 28 Jun.
 
 --------------------------------------------------------------------------------
-Date:
-App:
-Severity:
-Summary:
+Date:         2026-08-25
+App:          supplier
+Severity:     high
+Summary:      #G7LKITVG line total R12.99 but order total R20.02 with no fee/delivery line
 Steps:
-  1.
-  2.
-  3.
-Expected:
-Actual:
-Notes:
+  1. Sign in to live supplier console
+  2. Open order #G7LKITVG
+Expected:     Item lines plus any delivery/fee/VAT lines sum to the order total
+Actual:       Avocado each ×1 at R12.99; total R20.02; no fee or delivery line shown
+Notes:        Micheal, live console. Difference R7.03 unexplained on the packing/detail view.
+
+--------------------------------------------------------------------------------
+Date:         2026-08-25
+App:          supplier
+Severity:     medium
+Summary:      #G7LKITVG is Confirmed but timeline only shows Created (28 Jun), no confirmed time
+Steps:
+  1. Sign in to live supplier console
+  2. Open order #G7LKITVG (status Confirmed)
+Expected:     Timeline includes a Confirmed (or status-updated) event with time
+Actual:       Timeline only shows Created (28 Jun)
+Notes:        Micheal. Did not cancel or advance status.
 
 --------------------------------------------------------------------------------
 ----- EXAMPLE (not a real bug) -----
