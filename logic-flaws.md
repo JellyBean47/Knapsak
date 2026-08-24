@@ -109,3 +109,6 @@ These are already written in the handovers as work still to do. Do not re-log th
 - Stripe settlements do not yet clear card-clearing / bank in the POS ledger
 - POS production hosting (second Firebase site) is not configured
 - Employee picker app is later
+### LF-20260825-01 addendum — POS till is 15% VAT, Flutter cart is 8%
+- Date (Africa/Johannesburg): 2026-08-25
+- POS saVat.ts is 15 percent VAT inclusive. Flutter cart is 8 percent. Same avocado would not match a till sale.
