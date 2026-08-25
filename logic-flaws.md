@@ -112,3 +112,5 @@ These are already written in the handovers as work still to do. Do not re-log th
 ### LF-20260825-01 addendum — POS till is 15% VAT, Flutter cart is 8%
 - Date (Africa/Johannesburg): 2026-08-25
 - POS saVat.ts is 15 percent VAT inclusive. Flutter cart is 8 percent. Same avocado would not match a till sale.
+### LF-20260825-05 — Stripe-paid orders land Confirmed not Pending
+- Micheal 2026-08-25 live console: UNQUWODS Start preparing once, badge Preparing, timeline got Status updated, next is Out for delivery. G7LKITVG untouched. Paid Stripe orders land Confirmed not Pending by design. New order timeline stamp works.
