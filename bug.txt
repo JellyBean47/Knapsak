@@ -92,3 +92,5 @@ Notes:        EXAMPLE only. Delete or ignore this row when logging real bugs.
 ----- END EXAMPLE -----
 ### BUG-20260825-POS-01 — open till race: already open, then till opens anyway
 - Jeffrey 2026-08-25 local POS: open-till flashed A till session is already open. Close it first. then the till was open anyway (double-click race). Reload also opened it. Cash sale Test apple R10.00 posted, stock 10 to 9. Z-report VAT net R1.30 (15% incl), float R100, cash R110, variance R0.
+### BUG-20260825-POS-02 — till close race and float not in ledger
+- Jeffrey local POS: close-till flashed Till session is already closed. Cash-on-hand R10 after R100 float plus R10 sale -- float never hit the ledger. Pay showed Till session is not open then reload TILL CLOSED. Sale 2 slipped in after a failed pay. POS tile qty 9 vs inventory 10 before any sale. Z-report VAT net R1.30 variance R0 on successful close.
