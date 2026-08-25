@@ -90,3 +90,5 @@ Expected:     Z-report cash equals opening float plus cash sales (minus cash ret
 Actual:       EXAMPLE placeholder — record the numbers you saw
 Notes:        EXAMPLE only. Delete or ignore this row when logging real bugs.
 ----- END EXAMPLE -----
+### BUG-20260825-POS-01 — open till race: already open, then till opens anyway
+- Jeffrey 2026-08-25 local POS: open-till flashed A till session is already open. Close it first. then the till was open anyway (double-click race). Reload also opened it. Cash sale Test apple R10.00 posted, stock 10 to 9. Z-report VAT net R1.30 (15% incl), float R100, cash R110, variance R0.

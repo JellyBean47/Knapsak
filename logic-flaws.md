@@ -114,3 +114,5 @@ These are already written in the handovers as work still to do. Do not re-log th
 - POS saVat.ts is 15 percent VAT inclusive. Flutter cart is 8 percent. Same avocado would not match a till sale.
 ### LF-20260825-05 — Stripe-paid orders land Confirmed not Pending
 - Micheal 2026-08-25 live console: UNQUWODS Start preparing once, badge Preparing, timeline got Status updated, next is Out for delivery. G7LKITVG untouched. Paid Stripe orders land Confirmed not Pending by design. New order timeline stamp works.
+### LF-20260825-01 addendum — POS cart shows R10.00 with no VAT line; 15% only on Z-report
+- Jeffrey: sale cart Test apple R10.00 no VAT line. Z-report VAT net R1.30 matches 15% inclusive (10/1.15). Till model is SA VAT-inclusive. Flutter still adds 8% on top of shelf price. UX: operator cannot see VAT on the cart, only after close.
