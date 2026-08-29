@@ -23,7 +23,11 @@ void main() async {
 
   if (StripeConfig.isConfigured) {
     Stripe.publishableKey = StripeConfig.publishableKey;
-    await Stripe.instance.applySettings();
+    try {
+      await Stripe.instance.applySettings();
+    } catch (e, st) {
+      debugPrint('Stripe init failed; continuing without payments. $e\n$st');
+    }
   } else if (kDebugMode) {
     debugPrint(
       'Stripe publishable key not configured. '

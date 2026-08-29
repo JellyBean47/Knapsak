@@ -26,13 +26,21 @@ class Product {
       id: map['id'] as String,
       name: map['name'] as String,
       price: (map['price'] as num).toDouble(),
-      imageUrl: map['imageUrl'] as String?,
+      imageUrl: _readUrl(map),
       category: map['category'] as String? ?? 'general',
       delivery: map['delivery'] as String? ?? '',
       isSpecial: map['isSpecial'] as bool? ?? false,
       originalPrice: (map['originalPrice'] as num?)?.toDouble(),
       savings: (map['savings'] as num?)?.toDouble(),
     );
+  }
+
+  static String? _readUrl(Map<String, dynamic> map) {
+    for (final key in ['imageUrl', 'imageURL', 'image', 'photoUrl', 'photo']) {
+      final value = map[key];
+      if (value is String && value.trim().isNotEmpty) return value.trim();
+    }
+    return null;
   }
 
   Map<String, dynamic> toMap() {

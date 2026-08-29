@@ -49,8 +49,15 @@ class CartSummary extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _SummaryRow(label: 'Subtotal', value: formatPrice(subtotal)),
-          _SummaryRow(label: 'Tax', value: formatPrice(tax)),
+          if (tax > 0) _SummaryRow(label: 'Tax', value: formatPrice(tax)),
           _SummaryRow(label: 'Delivery Fee', value: formatPrice(deliveryFee)),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Prices include VAT',
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            ),
+          ),
           const Divider(height: 24, color: Color(0xFFE0E0E0)),
           _SummaryRow(
             label: 'Total',

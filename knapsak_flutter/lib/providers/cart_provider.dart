@@ -14,7 +14,8 @@ class CartProvider extends ChangeNotifier {
   double get totalPrice =>
       _items.values.fold(0.0, (sum, item) => sum + item.totalPrice);
 
-  static const double taxRate = 0.08;
+  /// Shelf prices are VAT-inclusive (SA retail). No extra US-style sales tax.
+  static const double taxRate = 0.0;
   static const double deliveryFee = 5.99;
 
   double get subtotal => totalPrice;

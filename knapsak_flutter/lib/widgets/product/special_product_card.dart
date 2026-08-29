@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
 import '../../utils/constants.dart';
+import '../common/product_image.dart';
 
 /// Special offer card — ported from HomeScreen.js inline SpecialProductCard.
 class SpecialProductCard extends StatelessWidget {
@@ -45,19 +46,12 @@ class SpecialProductCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
+                ProductImage(
+                  imageUrl: product.imageUrl,
+                  category: product.category,
                   width: 100,
                   height: 100,
-                  decoration: BoxDecoration(
-                    color: AppColors.background,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: const Icon(
-                    Icons.image_outlined,
-                    size: 60,
-                    color: Color(0xFFCCCCCC),
-                  ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

@@ -35,14 +35,10 @@ class ProductCard extends StatelessWidget {
                   ),
                   child: ProductImage(
                     imageUrl: product.imageUrl,
+                    category: product.category,
                     width: double.infinity,
                     height: 120,
                     borderRadius: BorderRadius.circular(8),
-                    placeholder: const Icon(
-                      Icons.image_outlined,
-                      size: 40,
-                      color: Color(0xFFCCCCCC),
-                    ),
                   ),
                 ),
                 Positioned(
