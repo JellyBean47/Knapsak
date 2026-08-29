@@ -40,7 +40,10 @@ class CartItemTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(imageUrl: product.imageUrl),
+          _ProductImage(
+            imageUrl: product.imageUrl,
+            category: product.category,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -108,34 +111,18 @@ class CartItemTile extends StatelessWidget {
 
 class _ProductImage extends StatelessWidget {
   final String? imageUrl;
+  final String? category;
 
-  const _ProductImage({this.imageUrl});
+  const _ProductImage({this.imageUrl, this.category});
 
   @override
   Widget build(BuildContext context) {
     return ProductImage(
       imageUrl: imageUrl,
+      category: category,
       width: 60,
       height: 60,
       borderRadius: BorderRadius.circular(8),
-      placeholder: const _ImagePlaceholder(),
-    );
-  }
-}
-
-class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 60,
-      color: AppColors.background,
-      child: const Icon(
-        Icons.image_outlined,
-        color: Color(0xFFCCCCCC),
-      ),
     );
   }
 }

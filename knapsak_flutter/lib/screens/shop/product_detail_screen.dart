@@ -117,12 +117,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               color: AppColors.background,
               child: ProductImage(
                 imageUrl: product.imageUrl,
+                category: product.category,
                 fit: BoxFit.contain,
-                placeholder: const Icon(
-                  Icons.image_outlined,
-                  size: 80,
-                  color: AppColors.border,
-                ),
               ),
             ),
             // Special badge
