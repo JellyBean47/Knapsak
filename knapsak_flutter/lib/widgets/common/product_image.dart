@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/constants.dart';
@@ -21,27 +22,54 @@ class ProductImage extends StatelessWidget {
     this.placeholder,
   });
 
+  double get _iconSize {
+    final w = width;
+    final h = height;
+    if (w != null && h != null && w.isFinite && h.isFinite) {
+      return (w < h ? w : h) * 0.5;
+    }
+    return 40;
+  }
+
   @override
   Widget build(BuildContext context) {
     final fallback = placeholder ??
         Icon(
           Icons.image_outlined,
-          size: (width != null && height != null)
-              ? (width! < height! ? width! : height!) * 0.5
-              : 40,
+          size: _iconSize,
           color: AppColors.border,
         );
 
-    Widget child = imageUrl != null
-        ? CachedNetworkImage(
-            imageUrl: imageUrl!,
+    final url = imageUrl?.trim();
+    if (url == null || url.isEmpty) {
+      Widget child = Center(child: fallback);
+      if (borderRadius != null) {
+        child = ClipRRect(borderRadius: borderRadius!, child: child);
+      }
+      return child;
+    }
+
+    Widget child = kIsWeb
+        ? Image.network(
+            url,
+            width: width,
+            height: height,
+            fit: fit,
+            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            errorBuilder: (_, _, _) => Center(child: fallback),
+            loadingBuilder: (context, child, progress) {
+              if (progress == null) return child;
+              return Center(child: fallback);
+            },
+          )
+        : CachedNetworkImage(
+            imageUrl: url,
             width: width,
             height: height,
             fit: fit,
             placeholder: (_, _) => Center(child: fallback),
             errorWidget: (_, _, _) => Center(child: fallback),
-          )
-        : Center(child: fallback);
+          );
 
     if (borderRadius != null) {
       child = ClipRRect(borderRadius: borderRadius!, child: child);

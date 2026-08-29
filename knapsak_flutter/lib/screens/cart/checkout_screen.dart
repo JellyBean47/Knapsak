@@ -182,12 +182,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     )),
                 const Divider(height: 24),
                 _SummaryRow(label: 'Subtotal', value: cart.subtotal),
-                const SizedBox(height: 4),
-                _SummaryRow(label: 'Tax (8%)', value: cart.tax),
+                if (cart.tax > 0) ...[
+                  const SizedBox(height: 4),
+                  _SummaryRow(label: 'Tax', value: cart.tax),
+                ],
                 const SizedBox(height: 4),
                 _SummaryRow(
                     label: 'Delivery',
                     value: CartProvider.deliveryFee),
+                const SizedBox(height: 4),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Prices include VAT',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                ),
                 const Divider(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

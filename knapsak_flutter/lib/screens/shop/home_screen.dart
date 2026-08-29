@@ -367,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('BEST PRICE ON POOL',
+          const Text("TODAY'S SPECIAL",
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
